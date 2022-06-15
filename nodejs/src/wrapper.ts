@@ -6,6 +6,7 @@ import { registerInstrumentations } from '@opentelemetry/instrumentation';
 import { awsLambdaDetector } from '@opentelemetry/resource-detector-aws';
 import { detectResources, envDetector, processDetector } from '@opentelemetry/resources';
 import { getEnv } from '@opentelemetry/core';
+import { Consts } from 'cisco-opentelemetry-specifications';
 import { verifyToken } from './utils';
 
 
@@ -13,7 +14,7 @@ const logLevel = getEnv().OTEL_LOG_LEVEL
 
 diag.setLogger(new DiagConsoleLogger(), logLevel)
 
-const ciscoToken = process.env["CISCO_TOKEN"] || '';
+const ciscoToken = process.env[Consts.CISCO_TOKEN_ENV] || '';
 
 if (!ciscoToken) {
     diag.error('Cisco token was not set');
@@ -39,7 +40,7 @@ async function init() {
     });
 
     const collectorOptions = {
-        url: 'https://production.cisco-udp.com/trace-collector',
+        url: Consts.DEFAULT_COLLECTOR_ENDPOINT,
         headers: {
             authorization: verifyToken(ciscoToken),
         },
