@@ -9,3 +9,13 @@ export function verifyToken(token: string) :string {
         return `Bearer ${token}`;
     }
 }
+
+export function getEnvBoolean(key: string, defaultValue = true) {
+    const value = process.env[key];
+
+    if (value === undefined) {
+        return defaultValue;
+    }
+
+    return ['false'].indexOf(value.trim().toLowerCase()) < 0;
+}
