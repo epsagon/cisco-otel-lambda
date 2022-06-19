@@ -30,14 +30,14 @@ jobs:
       - name: Install Root Dependencies
         run: |
           npm install --ignore-scripts
-          npm install copyfiles bestzip
+          npm install -g copyfiles bestzip
         working-directory: nodejs
 
-      - name: build
+      - name: Build
         run: npm run build
         working-directory: nodejs
 
-      - name: zip
+      - name: Create layer .zip
         run: copyfiles 'node_modules/**' build/workspace/nodejs && copyfiles -f 'scripts/*' build/workspace && copyfiles -f 'build/src/*' build/workspace && cd build/workspace && bestzip ../cisco-otel-lambda.zip *
         working-directory: nodejs
 
