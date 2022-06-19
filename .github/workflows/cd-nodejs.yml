@@ -21,7 +21,10 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 14
-      - run: npm install
+      - run: npm install |
+        npm install bestzip copyfiles rimraf |
+        npm compile |
+        copyfiles 'node_modules/**' build/workspace/nodejs && copyfiles -f 'scripts/*' build/workspace && copyfiles -f 'build/src/*' build/workspace && cd build/workspace && bestzip ../cisco-otel-lambda.zip *
         working-directory: nodejs
 
   publish-layers:
