@@ -26,10 +26,11 @@ jobs:
             node_modules
             package-lock.json
           key: ${{ runner.os }}-${{ matrix.container }}-${{ hashFiles('**/package.json') }}
-          working-directory: nodejs
 
       - name: Install Root Dependencies
-        run: npm install --ignore-scripts
+        run: |
+          npm install --ignore-scripts
+          npm install copyfiles bestzip
         working-directory: nodejs
 
       - name: build
