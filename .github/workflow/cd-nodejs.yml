@@ -1,0 +1,27 @@
+name: "Continuous Deployment (NodeJS)"
+
+on:
+  push:
+    paths:
+      - 'nodejs/**'
+    branches:
+      - main
+
+  pull_request:
+    paths:
+      - 'nodejs/**'
+    branches:
+      - main
+
+publish-layers:
+  needs: publish
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 14
+    - run: ./scripts/publish_layers.sh
+      env:
+        GH_TOKEN: ${{secrets.GH_TOKEN}}
+      working-directory: nodejs
