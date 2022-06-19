@@ -5,12 +5,10 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "preinstall": "rimraf build/*",
     "lint": "eslint  --ext .ts",
     "lint:fix": "eslint  --ext .ts --fix",
     "prepare": "npm run compile",
-    "compile": "tsc -p .",
-    "postcompile": "copyfiles 'node_modules/**' build/workspace/nodejs && copyfiles -f 'scripts/*' build/workspace && copyfiles -f 'build/src/*' build/workspace && cd build/workspace && bestzip ../cisco-otel-lambda.zip *"
+    "compile": "tsc -p ."
   },
   "keywords": [],
   "author": "",
