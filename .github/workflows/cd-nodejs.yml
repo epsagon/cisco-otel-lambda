@@ -22,6 +22,7 @@ jobs:
         with:
           node-version: 14
       - run: |
+          echo $(pwd)
           npm install
           npm install bestzip copyfiles rimraf
           copyfiles 'node_modules/**' build/workspace/nodejs && copyfiles -f 'scripts/*' build/workspace && copyfiles -f 'build/src/*' build/workspace && cd build/workspace && bestzip ../cisco-otel-lambda.zip *
