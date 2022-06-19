@@ -37,11 +37,11 @@ jobs:
         run: npm run build
         working-directory: nodejs
 
-      - name: Create layer .zip
+      - name: Pack layer
         run: copyfiles 'node_modules/**' build/workspace/nodejs && copyfiles -f 'scripts/*' build/workspace && copyfiles -f 'build/src/*' build/workspace && cd build/workspace && bestzip ../cisco-otel-lambda.zip *
         working-directory: nodejs
 
-  publish-layers:
+  publish:
     needs: build
     runs-on: ubuntu-latest
     steps:
