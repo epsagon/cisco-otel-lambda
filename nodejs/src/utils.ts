@@ -1,4 +1,4 @@
-import {diag} from "@opentelemetry/api";
+import { diag } from "@opentelemetry/api";
 
 export function verifyToken(token: string) :string {
     if (token.startsWith('Bearer')) {
