@@ -46,8 +46,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
       - run: ./scripts/publish_layer
-        shell: bash
         env:
           GH_TOKEN: ${{secrets.GH_TOKEN}}
         working-directory: nodejs
