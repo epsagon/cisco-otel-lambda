@@ -46,7 +46,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: ./scripts/publish_layer.sh
+      - run: ./scripts/publish_layer
         shell: sh
         env:
           GH_TOKEN: ${{secrets.GH_TOKEN}}
