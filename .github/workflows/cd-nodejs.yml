@@ -32,7 +32,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 14
-      - run: ./scripts/publish_layers.sh
+      - run: ./scripts/publish_layer.sh
         env:
           GH_TOKEN: ${{secrets.GH_TOKEN}}
         working-directory: nodejs
