@@ -47,7 +47,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: ./scripts/publish_layer
-        shell: sh
+        shell: bash
         env:
           GH_TOKEN: ${{secrets.GH_TOKEN}}
         working-directory: nodejs
