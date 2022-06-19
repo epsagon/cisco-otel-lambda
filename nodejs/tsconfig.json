@@ -18,6 +18,7 @@
     "target": "es2017",
     "incremental": true,
     "newLine": "LF",
+    "types": ["long"],
     "rootDir": ".",
     "outDir": "build"
   },
