@@ -17,6 +17,7 @@ env:
   BUCKET_NAME: otel-telescope-layer
   LAYER_NAME: cisco-otel-lambda
 
+jobs:
   publish:
     strategy:
       matrix:
