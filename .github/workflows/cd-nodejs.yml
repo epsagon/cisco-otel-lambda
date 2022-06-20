@@ -12,20 +12,18 @@ on:
       - 'nodejs/**'
     branches:
       - main
+  workflow_dispatch:
+    inputs:
+      aws_region:
+        description: 'Deploy to aws region'
+        required: true
+        default: "[ \"us-east-1\", \"us-east-2\", \"us-west-1\", \"us-west-2\", \"ap-south-1\", \"ap-northeast-2\", \"ap-southeast-1\", \"ap-southeast-2\", \"ap-northeast-1\", \"ca-central-1\", \"eu-central-1\", \"eu-west-1\", \"eu-west-2\", \"eu-west-3\", \"eu-north-1\", \"sa-east-1\" ]"
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-
-      - name: Cache Dependencies
-        uses: actions/cache@v2
-        with:
-          path: |
-            node_modules
-            package-lock.json
-          key: ${{ runner.os }}-${{ matrix.container }}-${{ hashFiles('**/package.json') }}
 
       - name: Install Root Dependencies
         run: |
@@ -43,6 +41,9 @@ jobs:
 
   publish:
     needs: build
+    strategy:
+      matrix:
+        aws_regions: ${{ fromJson(github.event.inputs.aws_region) }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -51,6 +52,18 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-      - run: bash ./scripts/publish_layer
-        working-directory: nodejs
+          aws-region: ${{ matrix.aws_region }}
+      - run: |
+          echo Publishing Telescope NodeJS layer to ${{ matrix.aws_region }}...
+          aws s3 mb s3://${{BUCKET_NAME}} --region ${{ matrix.aws_region }}
+          aws s3 cp ${{LAYER_NAME}}.zip s3://${{BUCKET_NAME}} --region ${{ matrix.aws_region }}
+          aws lambda publish-layer-version --layer-name ${{LAYER_NAME}} --content S3Bucket=${{BUCKET_NAME}},S3Key=${{LAYER_NAME}}.zip --compatible-runtimes nodejs16.x nodejs14.x nodejs12.x nodejs10.x nodejs8.10 --compatible-architectures "arm64" "x86_64" --license-info MIT --query 'LayerVersionArn' --output text --region ${{ matrix.aws_region }}
+          echo Clearing cached files...
+          aws s3 rm s3://${{BUCKET_NAME}}/${{LAYER_NAME}}.zip --${{ matrix.aws_region }}
+          aws s3 rb s3://${{BUCKET_NAME}} --${{ matrix.aws_region }}
+          echo Telescope layer published tp ${{ matrix.aws_region }}
+        env:
+          BUCKET_NAME=otel-telescope-layer
+          LAYER_NAME=cisco-otel-lambda
+
+        working-directory: nodejs/build
