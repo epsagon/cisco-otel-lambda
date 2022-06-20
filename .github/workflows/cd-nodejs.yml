@@ -54,7 +54,8 @@ jobs:
       - name: Publish
         run: |
           echo Publishing Telescope NodeJS layer to ${{ matrix.aws_region }}...
-          echo $pwd
+          echo $(pwd)
+          echo (ls)
           aws s3 mb s3://${{env.BUCKET_NAME}} --region ${{ matrix.aws_region }}
           aws s3 cp build/${{env.LAYER_NAME}}.zip s3://${{env.BUCKET_NAME}} --region ${{ matrix.aws_region }}
           aws lambda publish-layer-version --layer-name ${{env.LAYER_NAME}} --content S3Bucket=${{env.BUCKET_NAME}},S3Key=${{env.LAYER_NAME}}.zip --compatible-runtimes nodejs16.x nodejs14.x nodejs12.x nodejs10.x nodejs8.10 --compatible-architectures "arm64" "x86_64" --license-info MIT --query 'LayerVersionArn' --output text --region ${{ matrix.aws_region }}
