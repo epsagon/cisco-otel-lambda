@@ -22,6 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+  - name: Create S3 Bucket
     run: |
       echo Creating s3 bucket...
       aws s3 ls s3://${BUCKET_NAME} || aws s3 mb s3://${BUCKET_NAME}
@@ -72,6 +73,7 @@ jobs:
     needs: [create-s3, publish]
     steps:
       - uses: actions/checkout@v3
+  - name: Delete S3 Bucket
     run: |
       echo Deleting s3 bucket...
       aws s3 rb s3://${{env.BUCKET_NAME}}
