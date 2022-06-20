@@ -38,7 +38,7 @@ jobs:
         working-directory: nodejs
 
       - name: Pack layer
-        run: copyfiles 'node_modules/**' build/workspace/nodejs && copyfiles -f 'scripts/*' build/workspace && copyfiles -f 'build/src/*' build/workspace && cd build/workspace && bestzip ../cisco-otel-lambda.zip *
+        run: copyfiles 'node_modules/**' build/workspace/nodejs && copyfiles -f 'scripts/*' build/workspace && copyfiles -f 'build/src/*' build/workspace && cd build/workspace && bestzip ../otel-telescope-layer-nodejs.zip *
         working-directory: nodejs
 
   publish:
