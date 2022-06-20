@@ -17,8 +17,10 @@ env:
   BUCKET_NAME: otel-telescope-layer
   LAYER_NAME: cisco-otel-lambda
 
-jobs:
-  build:
+  publish:
+    strategy:
+      matrix:
+        aws_region: ["us-east-1", "us-east-2"]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -31,19 +33,6 @@ jobs:
 
       - name: Build
         run: npm run build
-        working-directory: nodejs
-
-  publish:
-    needs: build
-    strategy:
-      matrix:
-        aws_region: ["us-east-1", "us-east-2"]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Install Dependencies
-        run: npm install -g copyfiles bestzip
         working-directory: nodejs
 
       - name: Pack Layer
@@ -60,13 +49,11 @@ jobs:
       - name: Publish Layer
         run: |
           echo Publishing Telescope NodeJS layer to ${{ matrix.aws_region }}...
-          echo $(pwd)
-          echo $(ls)
           aws s3 mb s3://${{env.BUCKET_NAME}} --region ${{ matrix.aws_region }}
           aws s3 cp build/${{env.LAYER_NAME}}.zip s3://${{env.BUCKET_NAME}} --region ${{ matrix.aws_region }}
           aws lambda publish-layer-version --layer-name ${{env.LAYER_NAME}} --content S3Bucket=${{env.BUCKET_NAME}},S3Key=${{env.LAYER_NAME}}.zip --compatible-runtimes nodejs16.x nodejs14.x nodejs12.x nodejs10.x nodejs8.10 --compatible-architectures "arm64" "x86_64" --license-info MIT --query 'LayerVersionArn' --output text --region ${{ matrix.aws_region }}
           echo Clearing cached files...
-          aws s3 rm s3://${{env.BUCKET_NAME}}/${{env.LAYER_NAME}}.zip --${{ matrix.aws_region }}
-          aws s3 rb s3://${{env.BUCKET_NAME}} --${{ matrix.aws_region }}
+          aws s3 rm s3://${{env.BUCKET_NAME}}/${{env.LAYER_NAME}}.zip --region ${{ matrix.aws_region }}
+          aws s3 rb s3://${{env.BUCKET_NAME}} --region ${{ matrix.aws_region }}
           echo Telescope layer published tp ${{ matrix.aws_region }}
         working-directory: nodejs
