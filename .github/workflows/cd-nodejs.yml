@@ -53,7 +53,8 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ matrix.aws_region }}
-      - run: |
+      - name: Publish
+        run: |
           echo Publishing Telescope NodeJS layer to ${{ matrix.aws_region }}...
           aws s3 mb s3://${{BUCKET_NAME}} --region ${{ matrix.aws_region }}
           aws s3 cp ${{LAYER_NAME}}.zip s3://${{BUCKET_NAME}} --region ${{ matrix.aws_region }}
