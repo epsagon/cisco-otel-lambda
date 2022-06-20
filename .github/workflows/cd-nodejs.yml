@@ -33,10 +33,6 @@ jobs:
         run: npm run build
         working-directory: nodejs
 
-      - name: Pack layer
-        run: copyfiles 'node_modules/**' build/workspace/nodejs && copyfiles -f 'scripts/*' build/workspace && copyfiles -f 'build/src/*' build/workspace && cd build/workspace && bestzip ../cisco-otel-lambda.zip *
-        working-directory: nodejs
-
   publish:
     needs: build
     strategy:
@@ -45,13 +41,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
+      - name: Install Dependencies
+        run: npm install -g copyfiles bestzip
+        working-directory: nodejs
+
+      - name: Pack Layer
+        run: copyfiles 'node_modules/**' build/workspace/nodejs && copyfiles -f 'scripts/*' build/workspace && copyfiles -f 'build/src/*' build/workspace && cd build/workspace && bestzip ../cisco-otel-lambda.zip *
+        working-directory: nodejs
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ matrix.aws_region }}
-      - name: Publish
+
+      - name: Publish Layer
         run: |
           echo Publishing Telescope NodeJS layer to ${{ matrix.aws_region }}...
           echo $(pwd)
