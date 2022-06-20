@@ -22,7 +22,7 @@ jobs:
     concurrency: ci-${{ github.ref }}
     strategy:
       matrix:
-        aws_region: ["us-east-1", "us-east-2"]
+        aws_region: ["us-east-1"]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
