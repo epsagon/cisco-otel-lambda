@@ -18,10 +18,8 @@ env:
   LAYER_NAME: cisco-otel-lambda
 
 jobs:
-  create-s3:
+  create_s3:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
   - name: Create S3 Bucket
     run: |
       echo Creating s3 bucket...
@@ -68,11 +66,9 @@ jobs:
           echo Telescope layer published tp ${{ matrix.aws_region }}
         working-directory: nodejs
 
-  delete-s3:
+  delete_s3:
     runs-on: ubuntu-latest
     needs: [create-s3, publish]
-    steps:
-      - uses: actions/checkout@v3
   - name: Delete S3 Bucket
     run: |
       echo Deleting s3 bucket...
