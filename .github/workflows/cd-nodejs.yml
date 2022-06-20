@@ -20,8 +20,8 @@ on:
         default: "[ \"us-east-1\", \"us-east-2\", \"us-west-1\", \"us-west-2\", \"ap-south-1\", \"ap-northeast-2\", \"ap-southeast-1\", \"ap-southeast-2\", \"ap-northeast-1\", \"ca-central-1\", \"eu-central-1\", \"eu-west-1\", \"eu-west-2\", \"eu-west-3\", \"eu-north-1\", \"sa-east-1\" ]"
 
 env:
-  BUCKET_NAME=otel-telescope-layer
-  LAYER_NAME=cisco-otel-lambda
+  BUCKET_NAME: otel-telescope-layer
+  LAYER_NAME: cisco-otel-lambda
 
 jobs:
   build:
@@ -67,5 +67,4 @@ jobs:
           aws s3 rm s3://${{BUCKET_NAME}}/${{LAYER_NAME}}.zip --${{ matrix.aws_region }}
           aws s3 rb s3://${{BUCKET_NAME}} --${{ matrix.aws_region }}
           echo Telescope layer published tp ${{ matrix.aws_region }}
-
         working-directory: nodejs/build
