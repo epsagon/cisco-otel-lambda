@@ -18,18 +18,8 @@ env:
   LAYER_NAME: cisco-otel-lambda
 
 jobs:
-  create_s3:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Create S3 Bucket
-      run: |
-        echo Creating s3 bucket...
-        echo aws s3 mb s3://${{env.BUCKET_NAME}} --region ${{ matrix.aws_region }}
-        aws s3 mb s3://${{env.BUCKET_NAME}} --region ${{ matrix.aws_region }}
-
   publish:
     concurrency: cd-${{ github.ref }}
-    needs: create_s3
     strategy:
       matrix:
         aws_region: ["us-east-1", "us-east-2"]
@@ -60,19 +50,16 @@ jobs:
 
       - name: Publish Layer
         run: |
+          echo Creating s3 bucket...
+          aws s3 mb s3://${{ env.BUCKET_NAME }}
           echo Publishing Telescope NodeJS layer to ${{ matrix.aws_region }}...
           aws s3 cp build/${{env.LAYER_NAME}}.zip s3://${{env.BUCKET_NAME}}
           aws lambda publish-layer-version --layer-name ${{env.LAYER_NAME}} --content S3Bucket=${{env.BUCKET_NAME}},S3Key=${{env.LAYER_NAME}}.zip --compatible-runtimes nodejs16.x nodejs14.x nodejs12.x nodejs10.x nodejs8.10 --compatible-architectures "arm64" "x86_64" --license-info MIT --region ${{ matrix.aws_region }}
-          echo Clearing s3...
-          aws s3 rm s3://${{env.BUCKET_NAME}} --recursive
           echo Telescope layer published tp ${{ matrix.aws_region }}
         working-directory: nodejs
 
-  delete_s3:
-    runs-on: ubuntu-latest
-    needs: [create_s3, publish]
-    steps:
-    - name: Delete S3 Bucket
-      run: |
-        echo Deleting s3 bucket...
-        aws s3 rb s3://${{env.BUCKET_NAME}}
+      - name: Clean s3
+        if: always()
+        run: |
+          echo Deleting s3 bucket...
+          aws s3 rb --force s3://${{ env.BUCKET_NAME }}
