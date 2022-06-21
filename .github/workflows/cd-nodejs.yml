@@ -28,7 +28,7 @@ jobs:
 
   publish:
     concurrency: cd-${{ github.ref }}
-    needs: create-s3
+    needs: create_s3
     strategy:
       matrix:
         aws_region: ["us-east-1", "us-east-2"]
@@ -69,7 +69,7 @@ jobs:
 
   delete_s3:
     runs-on: ubuntu-latest
-    needs: [create-s3, publish]
+    needs: [create_s3, publish]
     steps:
     - name: Delete S3 Bucket
       run: |
