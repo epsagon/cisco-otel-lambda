@@ -24,7 +24,7 @@ jobs:
     - name: Create S3 Bucket
       run: |
         echo Creating s3 bucket...
-        aws s3 ls s3://${{BUCKET_NAME}} || aws s3 mb s3://${{BUCKET_NAME}}
+        aws s3 ls s3://${{env.BUCKET_NAME}} || aws s3 mb s3://${{env.BUCKET_NAME}}
 
   publish:
     concurrency: cd-${{ github.ref }}
