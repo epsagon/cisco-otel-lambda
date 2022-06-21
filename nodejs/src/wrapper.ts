@@ -1,16 +1,16 @@
-import {diag, DiagConsoleLogger, DiagLogLevel } from '@opentelemetry/api';
-import {BatchSpanProcessor, SDKRegistrationConfig} from '@opentelemetry/sdk-trace-base';
+import { diag, DiagConsoleLogger, DiagLogLevel } from '@opentelemetry/api';
+import { BatchSpanProcessor, SDKRegistrationConfig } from '@opentelemetry/sdk-trace-base';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node';
 import { registerInstrumentations } from '@opentelemetry/instrumentation';
 import { awsLambdaDetector } from '@opentelemetry/resource-detector-aws';
 import { detectResources, envDetector, processDetector } from '@opentelemetry/resources';
 import { Consts } from 'cisco-opentelemetry-specifications';
-import {getEnvBoolean, verifyToken} from './utils';
-import {CompositePropagator, W3CTraceContextPropagator} from "@opentelemetry/core";
-import {AWSXRayPropagator} from "@opentelemetry/propagator-aws-xray";
-import {B3InjectEncoding, B3Propagator} from "@opentelemetry/propagator-b3";
-import {AWSXRayIdGenerator} from "@opentelemetry/id-generator-aws-xray";
+import { getEnvBoolean, verifyToken } from './utils';
+import { CompositePropagator, W3CTraceContextPropagator } from "@opentelemetry/core";
+import { AWSXRayPropagator } from "@opentelemetry/propagator-aws-xray";
+import { B3InjectEncoding, B3Propagator } from "@opentelemetry/propagator-b3";
+import { AWSXRayIdGenerator } from "@opentelemetry/id-generator-aws-xray";
 
 const debug =
     getEnvBoolean(Consts.CISCO_DEBUG_ENV, Consts.DEFAULT_CISCO_DEBUG);

@@ -1,0 +1,67 @@
+name: "Continuous Deployment (NodeJS)"
+
+on:
+  push:
+    paths:
+      - 'nodejs/**'
+    branches:
+      - main
+
+  pull_request:
+    paths:
+      - 'nodejs/**'
+    branches:
+      - main
+
+jobs:
+  publish:
+    concurrency: cd-${{ github.ref }}
+    strategy:
+      matrix:
+        aws_region: ["us-east-1", "us-east-2"]
+    runs-on: ubuntu-latest
+    env:
+      BUCKET_NAME: otel-telescope-layer--${{ github.run_id }}-${{ matrix.aws_region }}
+      LAYER_NAME: cisco-otel-lambda
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Root Dependencies
+        run: |
+          npm install --ignore-scripts
+          npm install -g copyfiles bestzip
+        working-directory: nodejs
+
+      - name: Build
+        run: npm run build
+        working-directory: nodejs
+
+      - name: Pack Layer
+        run: copyfiles 'node_modules/**' build/workspace/nodejs && copyfiles -f 'scripts/*' build/workspace && copyfiles -f 'build/src/*' build/workspace && cd build/workspace && bestzip ../cisco-otel-lambda.zip *
+        working-directory: nodejs
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ matrix.aws_region }}
+
+      - name: Create s3
+        run: |
+          echo Creating s3 bucket in ${{ matrix.aws_region }}...
+          aws s3 mb s3://${{ env.BUCKET_NAME }} --region ${{ matrix.aws_region }}
+
+      - name: Publish Layer
+        run: |
+          echo Publishing Telescope NodeJS layer to ${{ matrix.aws_region }}...
+          aws s3 cp build/${{env.LAYER_NAME}}.zip s3://${{env.BUCKET_NAME}}
+          aws lambda publish-layer-version --layer-name ${{env.LAYER_NAME}} --content S3Bucket=${{env.BUCKET_NAME}},S3Key=${{env.LAYER_NAME}}.zip --compatible-runtimes nodejs16.x nodejs14.x nodejs12.x nodejs10.x nodejs8.10 --compatible-architectures "arm64" "x86_64" --license-info MIT --region ${{ matrix.aws_region }}
+          echo Telescope layer published tp ${{ matrix.aws_region }}
+        working-directory: nodejs
+
+      - name: Delete s3
+        run: |
+          echo Emptying and deleting s3 bucket...
+          aws s3 rm s3://${{ env.BUCKET_NAME }} --recursive --region ${{ matrix.aws_region }}
+          aws s3 rb --force s3://${{ env.BUCKET_NAME }} --region ${{ matrix.aws_region }}
