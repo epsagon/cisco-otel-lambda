@@ -62,6 +62,7 @@ jobs:
         working-directory: nodejs
 
       - name: Clean s3
+        if: always()
         run: |
           echo Emptying s3 bucket...
           aws s3 rm s3://${{ env.BUCKET_NAME }} --recursive
