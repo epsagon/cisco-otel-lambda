@@ -63,7 +63,7 @@ jobs:
           --compatible-architectures "arm64" "x86_64" \
           --license-info MIT \
           --region ${{ matrix.aws_region }}
-          echo Telescope layer published tp ${{ matrix.aws_region }}
+          echo Telescope layer published to ${{ matrix.aws_region }}
         working-directory: nodejs
 
       - name: Public Layer
