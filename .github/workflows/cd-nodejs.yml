@@ -56,9 +56,29 @@ jobs:
         run: |
           echo Publishing Telescope NodeJS layer to ${{ matrix.aws_region }}...
           aws s3 cp build/${{env.LAYER_NAME}}.zip s3://${{env.BUCKET_NAME}}
-          aws lambda publish-layer-version --layer-name ${{env.LAYER_NAME}} --content S3Bucket=${{env.BUCKET_NAME}},S3Key=${{env.LAYER_NAME}}.zip --compatible-runtimes nodejs16.x nodejs14.x nodejs12.x nodejs10.x nodejs8.10 --compatible-architectures "arm64" "x86_64" --license-info MIT --region ${{ matrix.aws_region }}
+          aws lambda publish-layer-version \
+          --layer-name ${{env.LAYER_NAME}} \
+          --content S3Bucket=${{env.BUCKET_NAME}},S3Key=${{env.LAYER_NAME}}.zip \
+          --compatible-runtimes nodejs16.x nodejs14.x nodejs12.x nodejs10.x nodejs8.10 \
+          --compatible-architectures "arm64" "x86_64" \
+          --license-info MIT \
+          --region ${{ matrix.aws_region }}
           echo Telescope layer published tp ${{ matrix.aws_region }}
         working-directory: nodejs
+
+      - name: Public Layer
+        run: |
+          layerVersion=$(
+            aws lambda list-layer-versions \
+              --layer-name ${{ env.LAYER_NAME }} \
+              --query 'max_by(LayerVersions, &Version).Version'
+          )
+          aws lambda add-layer-version-permission \
+            --layer-name ${{ env.LAYER_NAME }} \
+            --version-number $layerVersion \
+            --principal "*" \
+            --statement-id publish \
+            --action lambda:GetLayerVersion
 
       - name: Delete s3
         run: |
