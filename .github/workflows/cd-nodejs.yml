@@ -21,7 +21,7 @@ jobs:
         aws_region: ["us-east-1", "us-east-2"]
     runs-on: ubuntu-latest
     env:
-      BUCKET_NAME: otel-telescope-layer-${{ matrix.aws_region }}
+      BUCKET_NAME: otel-telescope-layer--${{ github.run_id }}-${{ matrix.aws_region }}
       LAYER_NAME: cisco-otel-lambda
     steps:
       - uses: actions/checkout@v3
