@@ -15,7 +15,7 @@ import { AWSXRayIdGenerator } from "@opentelemetry/id-generator-aws-xray";
 const debug =
     getEnvBoolean(Consts.CISCO_DEBUG_ENV, Consts.DEFAULT_CISCO_DEBUG);
 
-if(debug) {
+if(debug){
     diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);
 }
 
