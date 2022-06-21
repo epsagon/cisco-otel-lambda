@@ -15,13 +15,17 @@ import { AWSXRayIdGenerator } from "@opentelemetry/id-generator-aws-xray";
 const debug =
     getEnvBoolean(Consts.CISCO_DEBUG_ENV, Consts.DEFAULT_CISCO_DEBUG);
 
-if(debug){
+if(debug) {
     diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);
 }
 
 const { getNodeAutoInstrumentations } = require('@opentelemetry/auto-instrumentations-node');
 
-const instrumentations: any[] = getNodeAutoInstrumentations()
+const instrumentations: any[] = getNodeAutoInstrumentations({
+    '@opentelemetry/instrumentation-aws-lambda': {
+        disableAwsContextPropagation: true
+    },
+})
 
 async function init() {
     const resource =
