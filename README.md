@@ -13,7 +13,6 @@ This package provides Lambda Layers with OpenTelemetry-compliant tracing to AWS 
 | Node JS | `v16` `v14` `v12` |
 
 ## Configuration
-Advanced options can be configured as a parameter to the init() method:
 
 | Env                     | -          | Default | Description                              |
 |-------------------------|------------|---------|------------------------------------------|
@@ -23,7 +22,7 @@ Advanced options can be configured as a parameter to the init() method:
 
 ## Getting Help
 
-If you have any issue around using the library or the product, please don't hesitate to:
+If you have any issue around using the layer or the product, please don't hesitate to:
 
 - Use the [documentation](https://docs.telescope.app).
 - Use the help widget inside the product.
