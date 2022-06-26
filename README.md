@@ -18,6 +18,7 @@ This package provides Lambda Layers with OpenTelemetry-compliant tracing to AWS 
 |-------------------------|------------|---------|------------------------------------------|
 | CISCO_TOKEN             | `required` | -       | Cisco account token                      |
 | AWS_LAMBDA_EXEC_WRAPPER | `required` | -       | Value must be set to `/opt/otel-wrapper` |
+| OTEL_SERVICE_NAME       | `optional` | "${AWS_LAMBDA_FUNCTION_NAME},${OTEL_RESOURCE_ATTRIBUTES}"       | The service name |
 | CISCO_DEBUG             | `optional` | `false` | Debug logs                               |
 
 ## Getting Help
