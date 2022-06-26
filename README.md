@@ -1,11 +1,22 @@
 # cisco-otel-lambda
 This package provides Lambda Layers with OpenTelemetry-compliant tracing to AWS Lambda functions for the collection of distributed tracing and performance metrics in Cisco Telescope.
 
+## Getting Started
+Make sure to use the layer in the same region as your Lambda functions, as they are regionalized resources, meaning they can only be used in the region in which they are published.
+
+| Runtime | Lambda layer ARN format                                               |
+|---------|-----------------------------------------------------------------------|
+| Node JS | `arn:aws:lambda:<your-region>:621890419298:layer:cisco-otel-lambda:1` |
+
+Find the supported regions in the table below and replace `<your-region>` in the ARN to consume.
+
 ## Supported AWS Regions
 | AWS Region | Architecture     |
 |------------|------------------|
 | us-east-1  | `arm64` `x86_64` |
 | us-east-2  | `arm64` `x86_64` |
+| eu-west-1  | `arm64` `x86_64` |
+| eu-west-2  | `arm64` `x86_64` |
 
 ## Supported Runtimes
 | Runtime | Supported Version |
