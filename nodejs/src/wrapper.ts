@@ -1,3 +1,4 @@
+import { diag, DiagConsoleLogger, DiagLogLevel } from '@opentelemetry/api';
 import { BatchSpanProcessor, SDKRegistrationConfig } from '@opentelemetry/sdk-trace-base';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node';
@@ -8,6 +9,8 @@ import { CompositePropagator, W3CTraceContextPropagator } from "@opentelemetry/c
 import { AWSXRayPropagator } from "@opentelemetry/propagator-aws-xray";
 import { B3InjectEncoding, B3Propagator } from "@opentelemetry/propagator-b3";
 import { AWSXRayIdGenerator } from "@opentelemetry/id-generator-aws-xray";
+
+diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);
 
 const { getNodeAutoInstrumentations } = require('@opentelemetry/auto-instrumentations-node');
 
