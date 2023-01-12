@@ -6,7 +6,7 @@ import { registerInstrumentations } from '@opentelemetry/instrumentation';
 import { awsLambdaDetector } from '@opentelemetry/resource-detector-aws';
 import { detectResources, envDetector, processDetector } from '@opentelemetry/resources';
 import { Consts } from 'cisco-opentelemetry-specifications';
-import { getEnvBoolean, verifyToken } from './utils';
+import { getEnvBoolean } from './utils';
 import { CompositePropagator, W3CTraceContextPropagator } from "@opentelemetry/core";
 import { AWSXRayPropagator } from "@opentelemetry/propagator-aws-xray";
 import { B3InjectEncoding, B3Propagator } from "@opentelemetry/propagator-b3";
@@ -39,10 +39,7 @@ async function init() {
     });
 
     const collectorOptions = {
-        url: Consts.DEFAULT_COLLECTOR_ENDPOINT,
-        headers: {
-            authorization: verifyToken(ciscoToken),
-        },
+        url: 'https://collector.lambda.lupaproject.io/v1/traces:80',
     };
 
     const spanProcessor = new BatchSpanProcessor(new OTLPTraceExporter(collectorOptions));
@@ -72,11 +69,5 @@ async function init() {
     });
 }
 
-const ciscoToken = process.env[Consts.CISCO_TOKEN_ENV] || '';
-
-if (ciscoToken) {
-    init();
-} else {
-    diag.error('Cisco token was not found in the environment variables');
-}
+init();
 
