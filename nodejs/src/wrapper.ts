@@ -32,7 +32,7 @@ async function init() {
     });
 
     const collectorOptions = {
-        url: 'https://collector.lambda.lupaproject.io/v1/traces:80',
+        url: 'https://collector.lambda.lupaproject.io/v1/traces',
     };
 
     const spanProcessor = new BatchSpanProcessor(new OTLPTraceExporter(collectorOptions));
