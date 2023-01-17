@@ -21,16 +21,19 @@ const instrumentations: any[] = getNodeAutoInstrumentations({
 })
 
 async function init() {
+    console.log('enter init');
     const resource =
         await detectResources({
             detectors: [awsLambdaDetector, envDetector, processDetector]
         });
 
+    console.log('define NodeTracerProvider');
     const provider = new NodeTracerProvider({
         resource,
         idGenerator: new AWSXRayIdGenerator()
     });
 
+    console.log('define collector');
     const collectorOptions = {
         url: 'https://collector.lambda.lupaproject.io/v1/traces',
     };
@@ -42,6 +45,7 @@ async function init() {
     let sdkRegistrationConfig: SDKRegistrationConfig = {};
 
     if (!process.env.OTEL_PROPAGATORS) {
+        console.log('OTEL_PROPAGATORS exist');
         sdkRegistrationConfig =
             {
                 propagator:  new CompositePropagator({
@@ -56,11 +60,13 @@ async function init() {
     }
 
     provider.register(sdkRegistrationConfig);
-
+    
+    console.log('registerInstrumentations');
     registerInstrumentations({
         instrumentations: instrumentations
     });
 }
 
+console.log('before init');
 init();
 
