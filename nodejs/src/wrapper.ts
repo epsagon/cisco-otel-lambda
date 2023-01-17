@@ -10,7 +10,7 @@ import { AWSXRayPropagator } from "@opentelemetry/propagator-aws-xray";
 import { B3InjectEncoding, B3Propagator } from "@opentelemetry/propagator-b3";
 import { AWSXRayIdGenerator } from "@opentelemetry/id-generator-aws-xray";
 
-diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);
+diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.ALL);
 
 const { getNodeAutoInstrumentations } = require('@opentelemetry/auto-instrumentations-node');
 
