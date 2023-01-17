@@ -65,8 +65,14 @@ async function init() {
     registerInstrumentations({
         instrumentations: instrumentations
     });
+    console.log('after register');
 }
 
-console.log('before init');
-init();
+
+try {
+    console.log('before init');
+    init();
+} catch (error) {
+    console.log(error);
+}
 
